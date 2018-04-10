@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const logger = require('winston');
 const routes = require('../../app/routes');
+const sockets = require('../../app/middleware/sockets');
 let app;
 
 module.exports = (callback) => {
@@ -47,7 +48,7 @@ module.exports = (callback) => {
   });
 
   // init sockets
-  //app.use(sockets.initialize(wss));
+  app.use(sockets.initialize(wss));
 
   // Configure routes
   app.use(routes);

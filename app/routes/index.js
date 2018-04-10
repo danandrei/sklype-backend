@@ -8,6 +8,7 @@ const router = express.Router();
 const {
   auth,
   users,
+  chat,
 } = controllers;
 
 /**
@@ -51,6 +52,31 @@ apiRouter.post('/users',
 apiRouter.get('/users/me',
   passport.authenticate('jwt', { session: false }),
   controllerHandler(users.getOne, (req, res, next) => [req.user._id])
+);
+
+
+/**
+ * Chat.
+ */
+apiRouter.post('/chat/rooms',
+  passport.authenticate('jwt', { session: false }),
+  controllerHandler(chat.createRoom, (req, res, next) => [req.user._id, req.body])
+);
+apiRouter.get('/chat/rooms',
+  passport.authenticate('jwt', { session: false }),
+  controllerHandler(chat.getChatRooms, (req, res, next) => [req.user._id])
+);
+apiRouter.get('/chat/rooms/:id',
+  passport.authenticate('jwt', { session: false }),
+  controllerHandler(chat.getChatRoom, (req, res, next) => [req.user._id, req.params.id])
+);
+apiRouter.get('/chat/rooms/:id/messages',
+  passport.authenticate('jwt', { session: false }),
+  controllerHandler(chat.getChatMessages, (req, res, next) => [req.user._id, req.params.id, req.query])
+);
+apiRouter.post('/chat/rooms/:id/messages',
+  passport.authenticate('jwt', { session: false }),
+  controllerHandler(chat.postMessage, (req, res, next) => [req.user._id, req.params.id, req.body, req.sockets])
 );
 
 router.use('/v0.1.0', apiRouter);
